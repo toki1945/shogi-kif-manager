@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { initialPosition, parseKif } from "../lib/kif";
 import { sampleKif } from "../lib/sample";
+import { newGame } from "../lib/storage";
 
 test("平手の初期局面には40枚の駒がある", () => {
   assert.equal(initialPosition().pieces.length, 40);
@@ -35,4 +36,9 @@ test("同、成り、駒打ちを扱う", () => {
 test("不正な手順を拒否する", () => {
   assert.throws(() => parseKif("手合割：平手\n1 ７六歩(66)"), /一致しません/);
   assert.throws(() => parseKif("これはKIFではありません"), /指し手が見つかりません/);
+});
+
+test("取り込み時に指定した棋譜名を優先する", () => {
+  const game = newGame(sampleKif, "元のファイル名.kif", "  県大会 決勝戦  ");
+  assert.equal(game.title, "県大会 決勝戦");
 });
